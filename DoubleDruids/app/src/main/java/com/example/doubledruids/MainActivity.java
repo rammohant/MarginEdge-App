@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap photo = (Bitmap) data.getExtras().get("data");
         img.setImageBitmap(photo);
         super.onActivityResult(requestCode, resultCode, data);
-        
+
 //        Log.i("msg", "I am here1");
 //        if (resultCode != RESULT_CANCELED) {
 //            Log.i("msg", "I am here2");
