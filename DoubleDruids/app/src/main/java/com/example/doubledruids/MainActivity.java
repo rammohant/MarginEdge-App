@@ -1,20 +1,33 @@
 package com.example.doubledruids;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
 
 //import org.apache.commons.io.IOUtils;
 
@@ -22,16 +35,27 @@ public class MainActivity extends AppCompatActivity {
 
     Button cameraButton;
     Button selectButton;
+    Button uploadButton;
+
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+
     ImageView img;
+    Uri imgUri;
     private File imageFile;
-    Uri imageUri;
+    boolean photoPresent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        storage=FirebaseStorage.getInstance();
+        storageReference=storage.getReference();
+
         cameraButton = (Button) findViewById(R.id.cameraButton);
         selectButton = (Button) findViewById(R.id.selectButton);
+        uploadButton = (Button) findViewById(R.id.uploadButton);
         img = (ImageView) findViewById(R.id.imageView);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
                 dispatchChoosePictureIntent();
             }
         });
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(photoPresent==true){
+                    uploadPicture();
+                    Log.i("whatsgoingon", "photo present to upload");
+                } else {
+                    Log.i("whatsgoingon", "No photo present to upload");
+                }
+            }
+        });
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -54,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         Intent takePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePhoto, REQUEST_IMAGE_CAPTURE);
     }
+
     private void dispatchChoosePictureIntent() {
         // from library
 //        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
@@ -61,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 //        startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
 
         Intent pickPhoto = new Intent();
-        pickPhoto.setType("image/*");
+        pickPhoto.setType("image/jpeg/*");
         pickPhoto.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
 
@@ -73,59 +109,79 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         Log.i("msg", "I am here!");
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imgUri = data.getData();
+            img.setImageURI(imgUri);
+            photoPresent = true;
+            Log.i("whatsgoingon", "req image pick done");
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+//        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            img.setImageBitmap(photo);
 
-        if(requestCode==REQUEST_IMAGE_PICK && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            imageUri = data.getData();
-            img.setImageURI(imageUri);
-        } else if(requestCode==REQUEST_IMAGE_CAPTURE) {
+            Bitmap bitmapImage = (Bitmap) data.getExtras().get("data");
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmapImage, "Title", null);
+            imgUri = Uri.parse(path);
 
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            img.setImageBitmap(photo);
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
-//        Log.i("msg", "I am here1");
-//        if (resultCode != RESULT_CANCELED) {
-//            Log.i("msg", "I am here2");
-//            switch (requestCode) {
-//                case 1:
-//                    Log.i("msg", "I am here3");
-//                    if (resultCode == RESULT_OK && data != null) {
-//                        Log.i("msg", "I am here4");
-//                        Uri selectedImage = data.getData();
-//                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//                        if (selectedImage != null) {
-//                            Log.i("msg", "I am here5");
-//                            Cursor cursor = getContentResolver().query(selectedImage,
-//                                    filePathColumn, null, null, null);
-//                            if (cursor != null) {
-//                                Log.i("msg", "I am here6");
-//                                cursor.moveToFirst();
-//                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                                String picturePath = cursor.getString(columnIndex);
-//                                imageFile = new File(getApplicationContext().getFilesDir(),picturePath.substring(picturePath.lastIndexOf("/")+1));
-//
-//
-//
-////                                try (InputStream stream = getApplicationContext().getContentResolver().openInputStream(selectedImage)) {
-////                                    OutputStream outputStream = new FileOutputStream(imageFile);
-//////                                    IOUtils.copy(stream,outputStream);
-////                                }
-////                                catch(IOException e){
-////                                    e.printStackTrace();
-////                                }
-//                                img.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-//                                cursor.close();
-//                                Log.i("msg", "I am here7");
-//                            }
-//                        }
-//                        Log.i("msg", "I am here8");
-//                        img.setImageURI(selectedImage);
-//                    }
-//                    break;
+//            Bitmap bitmapImage = (Bitmap) data.getExtras().get("data");
+//            File tempDir= Environment.getExternalStorageDirectory();
+//            tempDir=new File(tempDir.getAbsolutePath()+"/.temp/");
+//            tempDir.mkdir();
+//            File tempFile = null;
+//            try {
+//                tempFile = File.createTempFile("temptitle", ".jpg", tempDir);
+//                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//                bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//                byte[] bitmapData = bytes.toByteArray();
+//                //write the bytes in file
+//                FileOutputStream fos = new FileOutputStream(tempFile);
+//                fos.write(bitmapData);
+//                fos.flush();
+//                fos.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
 //            }
-//        }
+//            imgUri = Uri.fromFile(tempFile);
+
+            img.setImageURI(imgUri);
+            photoPresent = true;
+            Log.i("whatsgoingon", "req image capture done");
+        } else {
+            Log.i("whatsgoingon", String.valueOf(requestCode));
+            Log.i("whatsgoingon", String.valueOf(resultCode));
+            Log.i("whatsgoingon", String.valueOf(data!=null));
+            Log.i("whatsgoingon", String.valueOf(data.getData() != null));
+        }
+    }
+
+    private void uploadPicture() {
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference riversRef = storageReference.child("images/" + randomKey);
+        Log.i("whatsgoingon", "Attempting upload");
+
+        riversRef.putFile(imgUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        Log.i("whatsgoingon", "Successful upload");
+                        Toast.makeText(MainActivity.this, "Upload Success", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
+                        Log.i("whatsgoingon", "Unsuccessful upload");
+                        Toast.makeText(MainActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
