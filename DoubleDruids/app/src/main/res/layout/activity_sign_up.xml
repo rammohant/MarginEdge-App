@@ -57,22 +57,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/requirementsTextView" />
 
+
     <TextView
         android:id="@+id/requirementsTextView"
-        android:layout_width="372dp"
-        android:layout_height="40dp"
+        android:layout_width="311dp"
+        android:layout_height="38dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="204dp"
         android:layout_marginEnd="11dp"
         android:layout_marginRight="11dp"
         android:text="Password must be of 6+ alphanumeric characters with at least one number and one letter."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUpTextView" />
-
-
 
     <Button
         android:id="@+id/signUpButton"
@@ -123,6 +122,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/firstNameEditText"
         app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="345dp"
+        android:layout_height="410dp"
+        app:layout_constraintBottom_toBottomOf="@+id/signUpButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.049"
+        app:srcCompat="@drawable/prettysquare" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
