@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     Button selectButton;
     ImageView img;
     private File imageFile;
+    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +56,15 @@ public class MainActivity extends AppCompatActivity {
     }
     private void dispatchChoosePictureIntent() {
         // from library
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
+
+        Intent pickPhoto = new Intent();
+        pickPhoto.setType("image/*");
+        pickPhoto.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
+
     }
 
     /**
@@ -66,9 +74,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("msg", "I am here!");
-        Bitmap photo = (Bitmap) data.getExtras().get("data");
-        img.setImageBitmap(photo);
-        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==REQUEST_IMAGE_PICK && resultCode==RESULT_OK && data!=null && data.getData()!=null){
+            imageUri = data.getData();
+            img.setImageURI(imageUri);
+        } else if(requestCode==REQUEST_IMAGE_CAPTURE) {
+
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            img.setImageBitmap(photo);
+            super.onActivityResult(requestCode, resultCode, data);
+        }
 
 //        Log.i("msg", "I am here1");
 //        if (resultCode != RESULT_CANCELED) {
