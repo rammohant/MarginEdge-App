@@ -63,7 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
         app:layout_constraintVertical_bias="0.571"
-        app:srcCompat="@drawable/prettysquare2" />
+        app:srcCompat="@drawable/prettysquare" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
         app:layout_constraintVertical_bias="0.747"
-        app:srcCompat="@drawable/prettysquare2" />
+        app:srcCompat="@drawable/prettysquare" />
 
     <ImageView
         android:id="@+id/imageView7"

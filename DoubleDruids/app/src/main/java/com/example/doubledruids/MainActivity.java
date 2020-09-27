@@ -4,14 +4,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.icu.text.SimpleDateFormat;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -19,16 +14,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 //import org.apache.commons.io.IOUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button button;
+    Button cameraButton;
+    Button selectButton;
     ImageView img;
     private File imageFile;
 
@@ -36,12 +28,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button = (Button) findViewById(R.id.button);
+        cameraButton = (Button) findViewById(R.id.cameraButton);
+        selectButton = (Button) findViewById(R.id.selectButton);
         img = (ImageView) findViewById(R.id.imageView);
-        button.setOnClickListener(new View.OnClickListener() {
+        cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
+            }
+        });
+        selectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchChoosePictureIntent();
             }
         });
     }
@@ -50,17 +49,14 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_PICK = 2;
 
     private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//        }
         Intent takePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePhoto, REQUEST_IMAGE_CAPTURE);
-
+    }
+    private void dispatchChoosePictureIntent() {
         // from library
-//        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
     }
 
     /**
