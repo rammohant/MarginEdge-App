@@ -48,23 +48,19 @@
 
     <Button
         android:id="@+id/uploadButton"
-        android:layout_width="0dp"
+        android:layout_width="211dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="656dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginTop="11dp"
         android:background="@drawable/rainbow"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Upload"
         android:textColor="@android:color/white"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cameraButton" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <ImageView
         android:id="@+id/imageView"

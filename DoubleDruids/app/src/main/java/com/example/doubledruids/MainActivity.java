@@ -1,10 +1,12 @@
 package com.example.doubledruids;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,8 +14,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.UUID;
 
 //import org.apache.commons.io.IOUtils;
 
@@ -21,15 +31,27 @@ public class MainActivity extends AppCompatActivity {
 
     Button cameraButton;
     Button selectButton;
+    Button uploadButton;
+
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+
     ImageView img;
+    Uri imgUri;
     private File imageFile;
+    boolean photoPresent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        storage=FirebaseStorage.getInstance();
+        storageReference=storage.getReference();
+
         cameraButton = (Button) findViewById(R.id.cameraButton);
         selectButton = (Button) findViewById(R.id.selectButton);
+        uploadButton = (Button) findViewById(R.id.uploadButton);
         img = (ImageView) findViewById(R.id.imageView);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dispatchChoosePictureIntent();
+            }
+        });
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(photoPresent==true){
+                    uploadPicture();
+                }
             }
         });
     }
@@ -66,8 +96,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("msg", "I am here!");
+        imgUri=data.getData();
+        Log.d("uri", imgUri.toString());
         Bitmap photo = (Bitmap) data.getExtras().get("data");
         img.setImageBitmap(photo);
+        //img.setImageURI(imgUri);
+        photoPresent=true;
+        //uploadPicture();
         super.onActivityResult(requestCode, resultCode, data);
 
 //        Log.i("msg", "I am here1");
@@ -111,6 +146,29 @@ public class MainActivity extends AppCompatActivity {
 //                    break;
 //            }
 //        }
+    }
+
+    private void uploadPicture() {
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference riversRef = storageReference.child("images/" + randomKey);
+
+        riversRef.putFile(imgUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        Toast.makeText(MainActivity.this, "Upload Success", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
+                        Toast.makeText(MainActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
