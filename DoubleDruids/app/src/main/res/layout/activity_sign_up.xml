@@ -72,17 +72,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUpTextView" />
 
-    <Spinner
-        android:id="@+id/accountTypesSpinner"
-        android:layout_width="100dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="84dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        app:layout_constraintEnd_toStartOf="@+id/profilePhotoImageView"
-        app:layout_constraintHorizontal_bias="0.427"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
 
     <Button
         android:id="@+id/signUpButton"
@@ -94,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accountTypesSpinner"
+
         app:layout_constraintVertical_bias="0.384" />
 
     <EditText
@@ -134,18 +124,5 @@
         app:layout_constraintTop_toBottomOf="@+id/firstNameEditText"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/profilePhotoImageView"
-        android:layout_width="90dp"
-        android:layout_height="89dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:background="#F5F0F0"
-        app:layout_constraintBottom_toTopOf="@+id/signUpButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText"
-        app:layout_constraintVertical_bias="0.0"/>
-        //tools:srcCompat="@drawable/silouete"
 
 </androidx.constraintlayout.widget.ConstraintLayout>

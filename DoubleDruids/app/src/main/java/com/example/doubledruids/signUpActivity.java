@@ -2,6 +2,7 @@ package com.example.doubledruids;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -101,20 +102,25 @@ public class signUpActivity extends AppCompatActivity  {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Log.d("Success", "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser curUser = mAuth.getCurrentUser();
 
-                            DatabaseReference databaseAthletes = FirebaseDatabase.getInstance().getReference("Athletes");
+                            DatabaseReference databaseUsers = FirebaseDatabase.getInstance().getReference("Users");
+                            //  DatabaseReference databaseUsers = mAuth.getReference("server/");
                             EditText firstName=findViewById(R.id.firstNameEditText);
                             EditText lastName=findViewById(R.id.lastNameEditText);
                             EditText email=findViewById(R.id.emailEditText);
                             EditText pw = findViewById(R.id.passwordEditText);
-                            User me=new User(firstName.getText().toString()+" "+lastName.getText().toString(), email.getText().toString(), pw.getText().toString(), user.getUid(), databaseAthletes.push().getKey());
-                            databaseAthletes.child(me.getKey()).setValue(me);
 
-                            //Intent intent=new Intent(signUpActivity.this, HomeActivity.class);
+                            User me=new User(firstName.getText().toString()+" "+lastName.getText().toString(), email.getText().toString(), pw.getText().toString(), curUser.getUid(), databaseUsers.push().getKey());
+
+                            //DatabaseReference databaseUsers = FirebaseDatabase.getInstance().getReference("Stuff").child("stuff2").setValue(me);
+                            Log.d("questionsss",me.getKey());
+                            databaseUsers.child(me.getKey()).setValue(me);
+
+                            Intent intent=new Intent(signUpActivity.this, MainActivity.class);
 //                            intent.putExtra("User", user);
 //                            intent.putExtra("user", me);
-                            //startActivity(intent);
+                            startActivity(intent);
                         }
                         else{
                             Log.w("Failure", "createUserWithEmail:Failure",task.getException());
