@@ -12,8 +12,5 @@ Given our lack of background on cloud technologies, there was a very steep learn
 ## Accomplishments that we're proud of
 As mentioned in the challenges we faced, the lack of background in Google Cloud within our team made FireBase quite a weary task, however, we came out of RamHacks with a viable product that works and connects to a centralized database, which is not only an accomplishment but also a skill we can take to future projects and hackathons. 
 
-## What we learned
-We learned **a lot** about FireBase and all that 
-
 ## What's next for SAFR
 Given more time, we hope to fix up the OpenCV and Vision API functionalities of our application, which would not only warn the user when the image was not taken properly but would also allow our app to use AI to read the contents of each image and upload them into the database for easy organization and access of invoices. 
