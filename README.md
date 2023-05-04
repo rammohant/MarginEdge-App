@@ -1,4 +1,5 @@
-# RamHacks2020
+# SAFR Invoicing Camera Application 
+### Awarded Second Place in 2020 RamHacks MarginEdge Challenge
 
 ## What it does
 A mobile application created using Android Studio designed to provide a secure location to invoice sales data and any other relevant files into a centralized database from which MartinEdge can access and analyze all of their consumers' data. 
@@ -14,3 +15,5 @@ As mentioned in the challenges we faced, the lack of background in Google Cloud 
 
 ## What's next for SAFR
 Given more time, we hope to fix up the OpenCV and Vision API functionalities of our application, which would not only warn the user when the image was not taken properly but would also allow our app to use AI to read the contents of each image and upload them into the database for easy organization and access of invoices. 
+
+For more info, see DevPost Hackathon Submission: https://devpost.com/software/safr
